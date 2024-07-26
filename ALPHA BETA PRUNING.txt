@@ -1,0 +1,47 @@
+def alpha_beta(node, depth, alpha, beta, is_maximizing):
+    if depth == 0 or is_terminal(node):
+        return evaluate(node)
+    
+    if is_maximizing:
+        max_eval = -float('inf')
+        for child in generate_children(node):
+            eval = alpha_beta(child, depth - 1, alpha, beta, False)
+            max_eval = max(max_eval, eval)
+            alpha = max(alpha, eval)
+            if beta <= alpha:
+                break
+        return max_eval
+    else:
+        min_eval = float('inf')
+        for child in generate_children(node):
+            eval = alpha_beta(child, depth - 1, alpha, beta, True)
+            min_eval = min(min_eval, eval)
+            beta = min(beta, eval)
+            if beta <= alpha:
+                break
+        return min_eval
+
+def is_terminal(node):
+    # Example terminal check (e.g., depth limit or game over condition)
+    return node.get('depth', 0) == 0
+
+def evaluate(node):
+    # Example evaluation function (e.g., utility value of the node)
+    return node.get('value', 0)
+
+def generate_children(node):
+    # Example child generation (simple increment for illustration)
+    depth = node.get('depth', 0)
+    if depth > 0:
+        return [{'depth': depth - 1, 'value': node.get('value', 0) + i} for i in range(2)]
+    return []
+
+# Example usage
+root = {'depth': 3, 'value': 0}  # Root node of the game tree
+depth = 3
+alpha = -float('inf')
+beta = float('inf')
+is_maximizing = True
+
+best_value = alpha_beta(root, depth, alpha, beta, is_maximizing)
+print(f"Best value: {best_value}")

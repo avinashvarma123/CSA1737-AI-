@@ -1,0 +1,38 @@
+def is_valid(assignment, var, value, constraints):
+    for neighbor in constraints[var]:
+        if neighbor in assignment and assignment[neighbor] == value:
+            return False
+    return True
+
+def backtrack(assignment, variables, domains, constraints):
+    if len(assignment) == len(variables):
+        return assignment
+    
+    var = next(v for v in variables if v not in assignment)
+    for value in domains[var]:
+        if is_valid(assignment, var, value, constraints):
+            assignment[var] = value
+            result = backtrack(assignment, variables, domains, constraints)
+            if result:
+                return result
+            assignment.pop(var)
+    return None
+
+def map_coloring(variables, domains, constraints):
+    return backtrack({}, variables, domains, constraints)
+
+# Example usage
+variables = ['WA', 'NT', 'SA', 'Q', 'NSW', 'V', 'T']
+domains = {var: ['Red', 'Green', 'Blue'] for var in variables}
+constraints = {
+    'WA': ['NT', 'SA'],
+    'NT': ['WA', 'SA', 'Q'],
+    'SA': ['WA', 'NT', 'Q', 'NSW', 'V'],
+    'Q': ['NT', 'SA', 'NSW'],
+    'NSW': ['Q', 'SA', 'V'],
+    'V': ['SA', 'NSW'],
+    'T': []
+}
+
+solution = map_coloring(variables, domains, constraints)
+print(solution)
